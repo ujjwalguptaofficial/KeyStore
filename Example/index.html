@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>JsStorage Example</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <script src="scripts/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/bootstrap.css" />
+    <script src="scripts/bootstrap.js"></script>
+    <link rel="stylesheet" href="style/font-awesome.min.css" />
+</head>
+
+<body>
+    <div class="row row-centered " style="margin-top:10px; ">
+        <div class="col-xs-12 col-sm-10 col-centered ">
+            <table id="tblGrid " class="table table-hover ">
+                <caption style="text-align:center;padding:7px 0px 7px 0px;background:#4f4f86;color:white;font-family:cursive;font-size:18px; ">Add value</caption>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="tblContainer ">
+                    <tr>
+                        <td><input id="textKey" type="text" /></td>
+                        <td><input id="textValue" type="text" /></td>
+                        <td>
+                            <select id="selectType">
+                                <option value='string'>String</option>
+                                <option value='number'>Number</option>
+                                <option value='bool'>Bool</option>
+                                 <option value='object'>Object</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button id="btnAdd" class="btn btn-success">
+                Add <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+                <button id="btnClear" class="btn btn-danger">
+                clear <i class="fa fa-close" aria-hidden="true"></i>
+            </button>
+            </div>
+        </div>
+    </div>
+    <script src="Scripts/Keystore.js "></script>
+    <script src="Scripts/main.js "></script>
+    <link href="style.css " rel="stylesheet " type="text/css " />
+</body>
+
+</html>
