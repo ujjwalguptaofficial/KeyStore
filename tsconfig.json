@@ -7,6 +7,10 @@
         "inlineSources": true,
         "out": "../outputfile/KeyStore.js",
         "target": "es5",
-        "preserveConstEnums": true
-    }
+        "preserveConstEnums": true,
+        "declaration": true
+    },
+    "exclude": [
+        "outputfile/*.d.ts"
+    ]
 }

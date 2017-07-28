@@ -58,4 +58,9 @@ module KeyStore {
         LastError: ""
     };
 
+    export interface ISet {
+        Key: string,
+        Value; any
+    }
+
 }

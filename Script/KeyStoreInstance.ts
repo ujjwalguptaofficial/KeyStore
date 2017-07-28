@@ -4,10 +4,6 @@ import Column = Model.Column;
 import Table = Model.Table;
 
 module KeyStore {
-    export interface ISet {
-        Key: string,
-        Value; any
-    }
     export class Instance {
         KeyStoreObj: Business.MainLogic;
         TableName: string = "LocalStore";
