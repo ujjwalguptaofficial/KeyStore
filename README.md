@@ -26,7 +26,7 @@ keyStore.set('hello','world',function(){
 });
 
 ```
-###Note : - using callback you can be sure that data has been inserted.
+### Note : - using callback you can be sure that data has been inserted.
 
 ## Get value
 
@@ -36,7 +36,7 @@ keyStore.get('c',function(result){
 })
 
 ```
-##remove value
+## remove value
 
 ```
 keyStore.remove('c',function(result){
