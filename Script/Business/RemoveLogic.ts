@@ -1,60 +1,55 @@
 module KeyStore {
     export module Business {
-        export class RemoveLogic {
-            constructor(query: IDelete, onSuccess: Function, onError: Function) {
-
+        export class RemoveLogic extends BaseLogic {
+            Query: IDelete;
+            RowAffected: number = 0;
+            private remove = function () {
                 var That = this,
-                    Transaction: IDBTransaction = DbConnection.transaction([query.From], "readwrite"),
-                    ObjectStore: IDBObjectStore = Transaction.objectStore(query.From),
-                    ErrorOccured: boolean = false,
-                    ErrorCount = 0,
-                    RowAffected = 0,
-                    onErrorGetRequest = function (e) {
-                        ++ErrorCount;
-                        if (onError != null && this.ErrorCount == 1) {
-                            onError((e as any).target.error);
-                        }
-                        console.error(e);
-                    };
+                    removeData = function (column, value) {
 
-                Transaction.oncomplete = function () {
-                    if (onSuccess != null) {
-                        onSuccess(RowAffected);
-                    }
-                }
-
-                Transaction.onerror = onErrorGetRequest;
-
-                var Column,
-                    ExecutionNo = 0,
-                    ConditionLength = Object.keys(query.Where).length;
-                for (Column in query.Where) {
-                    if (!ErrorOccured) {
-                        var CursorOpenRequest = ObjectStore.index(Column).openCursor(IDBKeyRange.only(query.Where[Column])),
-                            ExecutionNo = 0;
-
+                        var CursorOpenRequest = That.ObjectStore.index(column).openCursor(IDBKeyRange.only(value));
                         CursorOpenRequest.onerror = function (e) {
-                            ErrorOccured = true;
-                            onErrorGetRequest(e);
+                            That.ErrorOccured = true;
+                            That.onErrorOccured(e);
                         };
                         CursorOpenRequest.onsuccess = function (e) {
                             var Cursor: IDBCursorWithValue = (<any>e).target.result;
-
                             if (Cursor) {
                                 Cursor.delete();
-                                ++RowAffected;
+                                ++That.RowAffected;
                                 Cursor.continue();
                             }
 
                         }
 
-
                     }
-                    else {
-                        return;
+
+                for (var Column in this.Query.Where) {
+                    if (!That.ErrorOccured) {
+                        removeData(Column, That.Query.Where[Column]);
+                    }
+                    break;
+                }
+            }
+
+            constructor(query: IDelete, onSuccess: Function, onError: Function) {
+                super();
+                var That = this;
+                this.Query = query;
+                this.OnError = onError;
+                this.Transaction = DbConnection.transaction([query.From], "readwrite");
+                this.ObjectStore = this.Transaction.objectStore(query.From);
+
+                this.Transaction.oncomplete = function () {
+                    if (onSuccess != null) {
+                        onSuccess(That.RowAffected);
                     }
                 }
+                this.Transaction.onerror = function (e) {
+                    That.onErrorOccured(e);
+                }
 
+                this.remove();
             }
 
         }

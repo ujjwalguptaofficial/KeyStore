@@ -1,45 +1,70 @@
 # Overview
 
-keyStore is a library for javascript. It saves data in key and value format in html5 storage technology indexedDb.You can consider this as alternative of localStorage api but it has more features than localStorage.
+keyStore is a storage library for javascript. It saves data in key and value pair in  indexedDb.It acts as an alternative of localStorage.
 
-e.g. - you can store not just string but any type of data including a big object or blog storage.
+# Feature
 
-##You can use KeyStore when localStorage is not working or you want to store more data.
+1. Preserves data type.
+2. No size limitation.
+3. Can save any type of data including object or blob storage. 
+4. Asynchronous api
 
 # Doc
 
-## Create Instance
+## Initialize KeyStore
 
 ```
-var keyStore=new JsStore.KeyStore();
+KeyStore.init();
 
 ```
-## Store Value
+## set - This will insert or update data.
 
 ```
-keyStore.set('hello','world');
+Syntax: KeyStore.set(Key,value,callBack);
+
+Example -
+
+KeyStore.set('form-data',{
+    Name:'Ujjwal Gupta',
+    Country:'India',
+    State:'Odisha',
+    City:'Bhubaneswar'
+});
 
 or with callback
 
-keyStore.set('hello','world',function(){
+KeyStore.set('hello','world',function(){
 	
 });
 
 ```
-### Note : - using callback you can be sure that data has been inserted.
+### Note : - callback will be executed when data has been successfully inserted.
 
-## Get value
+## get - This will return data in callback.
 
 ```
-keyStore.get('c',function(result){
+Syntax: KeyStore.get(Key,callBack);
+
+Example -
+
+KeyStore.get('c',function(result){
     console.log(result);
 })
 
 ```
-## remove value
+
+## remove - This will remove data
 
 ```
-keyStore.remove('c',function(result){
+Syntax: KeyStore.remove(Key,callBack);
+
+Example-
+
+KeyStore.remove('c');
+
+or with callback
+
+KeyStore.remove('c',function(result){
 	console.log(result);
 })
 

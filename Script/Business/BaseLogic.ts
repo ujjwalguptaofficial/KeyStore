@@ -1,7 +1,7 @@
 module KeyStore {
     export module Business {
-        export class BaseGetLogic {
-            Results;
+        export class BaseLogic {
+            Results = null;
             OnSuccess: Function;
             OnError: Function;
             ErrorOccured: boolean = false;
@@ -9,7 +9,7 @@ module KeyStore {
             Transaction: IDBTransaction;
             ObjectStore: IDBObjectStore;
 
-            public onErrorRequest = function (e) {
+            protected onErrorOccured = function (e) {
                 ++this.ErrorCount;
                 if (this.ErrorCount == 1) {
                     if (this.OnError != null) {

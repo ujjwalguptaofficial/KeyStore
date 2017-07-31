@@ -1,80 +1,51 @@
 module KeyStore {
     export module Business {
-        export class SetLogic {
-            Store: IDBObjectStore;
-            OnSuccess: Function;
-            OnError: Function;
-            ErrorOccured: boolean = false;
-            ErrorCount = 0;
-            Error: IError;
+        export class SetLogic extends BaseLogic {
 
-            public onErrorRequest = function (e, customError = false) {
-                ++this.ErrorCount;
-                if (this.ErrorCount == 1) {
-                    if (this.OnError != null) {
-                        if (!customError) {
-                            this.OnError((e as any).target.error, this.TotalRowsAffected);
-                        }
-                        else {
-                            this.OnError(e, this.TotalRowsAffected);
-                        }
-                    }
-                }
-                console.error(e);
-            }
-
-            constructor(tableName: string, value, isReturn, onSuccess: Function, onError: Function) {
-                try {
-                    this.OnSuccess = onSuccess;
-                    this.OnError = onError;
-                    var That = this,
-                        Updated = false;
-
-                    var UpdateIfExist = function () {
-                        var Transaction = DbConnection.transaction([tableName], "readwrite");
-                        That.Store = Transaction.objectStore(tableName);
-                        Transaction.oncomplete = function (e) {
-                            if (Updated) {
-                                if (onSuccess != null) {
-                                    onSuccess();
-                                }
-                            }
-                            else {
-                                SetData();
-                            }
-                        };
-                        var CursorOpenRequest = That.Store.index('Key').openCursor(IDBKeyRange.only(value['Key']));
-
+            private setData = function (value) {
+                var That: SetLogic = this,
+                    updateIfExistElseInsert = function () {
+                        var CursorOpenRequest = That.ObjectStore.index('Key').openCursor(IDBKeyRange.only(value['Key']));
                         CursorOpenRequest.onsuccess = function (e) {
                             var Cursor: IDBCursorWithValue = (<any>e).target.result;
                             if (Cursor) {
-                                Updated = true;
                                 Cursor.value['Value'] = value['Value'];
                                 Cursor.update(Cursor.value);
+                            }
+                            else {
+                                insertData();
                             }
                         }
 
                         CursorOpenRequest.onerror = function (e) {
                             That.ErrorOccured = true;
-                            That.onErrorRequest(e);
+                            That.onErrorOccured(e);
                         }
-                    }
 
-                    var SetData = function () {
-                        var Transaction = DbConnection.transaction([tableName], "readwrite");
-                        That.Store = Transaction.objectStore(tableName);
-                        Transaction.oncomplete = function (e) {
-                            if (onSuccess != null) {
-                                onSuccess();
-                            }
-                        };
-                        var AddResult = That.Store.add(value);
+                    },
+                    insertData = function () {
+                        var AddResult = That.ObjectStore.add(value);
                         AddResult.onerror = function (e) {
-                            That.onErrorRequest(e);
+                            That.ErrorOccured = true;
+                            That.onErrorOccured(e);
                         }
                     }
+                updateIfExistElseInsert();
+            }
 
-                    UpdateIfExist();
+            constructor(tableName: string, value, onSuccess: Function, onError: Function) {
+                super();
+                try {
+                    var That = this;
+                    this.OnError = onError;
+                    this.Transaction = DbConnection.transaction([tableName], "readwrite");
+                    this.ObjectStore = this.Transaction.objectStore(tableName);
+                    this.Transaction.oncomplete = function (e) {
+                        if (onSuccess != null) {
+                            onSuccess();
+                        }
+                    };
+                    this.setData(value);
                 }
                 catch (ex) {
                     console.error(ex);

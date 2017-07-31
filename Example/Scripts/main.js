@@ -1,6 +1,5 @@
-var KeyStorage;
 window.onload = function () {
-    KeyStorage = new KeyStore.Instance();
+    KeyStore.init();
     registerElementEvents();
 }
 
@@ -20,7 +19,7 @@ function registerElementEvents() {
                 Value = JSON.parse(Value);
                 break;
         }
-        KeyStorage.set(Key, Value, function () {
+        KeyStore.set(Key, Value, function () {
             alert('Successfully added');
         }, function (error) {
             console.log(error);
@@ -41,7 +40,15 @@ function clear() {
 }
 
 function getValue(key) {
-    KeyStorage.get(key, function (result) {
+    KeyStore.get(key, function (result) {
         console.log(result);
     });
+
+}
+
+function removeValue(key) {
+    KeyStore.remove(key, function (result) {
+        console.log(result);
+    });
+
 }

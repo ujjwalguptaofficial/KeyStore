@@ -10,7 +10,7 @@
         "preserveConstEnums": true,
         "declaration": true
     },
-    "exclude": [
-        "outputfile/*.d.ts"
+    "include": [
+        "script/**/*"
     ]
 }
