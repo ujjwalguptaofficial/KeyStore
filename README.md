@@ -11,12 +11,6 @@ keyStore is a storage library for javascript. It saves data in key and value pai
 
 # Doc
 
-## Initialize KeyStore
-
-```
-KeyStore.init();
-
-```
 ## set - This will insert or update data.
 
 ```

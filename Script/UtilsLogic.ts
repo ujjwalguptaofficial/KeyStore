@@ -3,7 +3,7 @@ module KeyStore {
         Name: string,
         Value: string
     }
-    export class UtilityLogic {
+    export class Utils {
         /**
          * determine and set the DataBase Type
          * 
@@ -20,6 +20,5 @@ module KeyStore {
                 throw 'Your browser doesnot support IndexedDb';
             }
         }
-
     }
 }

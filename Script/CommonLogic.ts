@@ -21,18 +21,28 @@ module KeyStore {
         LastError: string
     }
 
-    export interface ISet {
-        Key: string,
-        Value; any
+    export interface IInsert {
+        TableName: string,
+        Set: {
+            Key: string,
+            Value; any
+        }
     }
 
-    export var KeyStoreObj,
-        Status: KeyStoreStatus = <KeyStoreStatus>{
-            ConStatus: ConnectionStatus.NotStarted,
-            LastError: ""
-        },
-        TableName = "LocalStore",
-        openDb = function () {
-            KeyStoreObj.createDb(TableName);
-        };
+    export interface IWebWorkerRequest {
+        Name: string,
+        Query: any,
+        OnSuccess: Function,
+        OnError: Function
+    }
+
+    export interface IWebWorkerResult {
+        ErrorOccured: boolean;
+        ErrorDetails: any;
+        ReturnedValue: any;
+    }
+
+    export var QueryRequests: Array<IWebWorkerRequest> = [],
+        TableName = "LocalStore";
+
 }

@@ -1,10 +1,10 @@
 module KeyStore {
     export module Business {
-        export class GetLogic extends BaseLogic {
+        export class Get extends Base {
             Query: ISelect;
 
             private get = function () {
-                var That: GetLogic = this,
+                var That: Get = this,
                     getData = function (column, value) {
                         var CursorOpenRequest = That.ObjectStore.index(column).openCursor(IDBKeyRange.only(value));
                         CursorOpenRequest.onerror = function (e) {

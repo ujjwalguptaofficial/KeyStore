@@ -1,5 +1,4 @@
 window.onload = function () {
-    KeyStore.init();
     registerElementEvents();
 }
 

@@ -1,6 +1,6 @@
 module KeyStore {
     export module Business {
-        export class RemoveLogic extends BaseLogic {
+        export class Remove extends Base {
             Query: IDelete;
             RowAffected: number = 0;
             private remove = function () {

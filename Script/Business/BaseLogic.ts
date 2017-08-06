@@ -1,6 +1,6 @@
 module KeyStore {
     export module Business {
-        export class BaseLogic {
+        export class Base {
             Results = null;
             OnSuccess: Function;
             OnError: Function;

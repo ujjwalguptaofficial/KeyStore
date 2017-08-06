@@ -1,12 +1,14 @@
 module KeyStore {
     export module Business {
-        export class InitDbLogic {
-            constructor(dbName: string, tableName: string) {
+        export class InitDb {
+            constructor(dbName: string, tableName: string, onSuccess: Function, onError: Function) {
                 var That = this,
                     DbRequest = window.indexedDB.open(dbName, 1);
 
                 DbRequest.onerror = function (event) {
-                    console.error((event as any).target.error);
+                    if (onError != null) {
+                        onError((event as any).target.error);
+                    }
                 };
 
                 DbRequest.onsuccess = function (event) {
@@ -30,6 +32,10 @@ module KeyStore {
                     DbConnection.onabort = function (e) {
                         Status.ConStatus = ConnectionStatus.Closed;
                         Status.LastError = "Connection aborted";
+                    }
+
+                    if (onSuccess != null) {
+                        onSuccess();
                     }
                 };
 

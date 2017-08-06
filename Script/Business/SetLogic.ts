@@ -1,9 +1,9 @@
 module KeyStore {
     export module Business {
-        export class SetLogic extends BaseLogic {
+        export class Set extends Base {
 
             private setData = function (value) {
-                var That: SetLogic = this,
+                var That: Set = this,
                     updateIfExistElseInsert = function () {
                         var CursorOpenRequest = That.ObjectStore.index('Key').openCursor(IDBKeyRange.only(value['Key']));
                         CursorOpenRequest.onsuccess = function (e) {
@@ -33,19 +33,19 @@ module KeyStore {
                 updateIfExistElseInsert();
             }
 
-            constructor(tableName: string, value, onSuccess: Function, onError: Function) {
+            constructor(query: IInsert, onSuccess: Function, onError: Function) {
                 super();
                 try {
                     var That = this;
                     this.OnError = onError;
-                    this.Transaction = DbConnection.transaction([tableName], "readwrite");
-                    this.ObjectStore = this.Transaction.objectStore(tableName);
+                    this.Transaction = DbConnection.transaction([query.TableName], "readwrite");
+                    this.ObjectStore = this.Transaction.objectStore(query.TableName);
                     this.Transaction.oncomplete = function (e) {
                         if (onSuccess != null) {
                             onSuccess();
                         }
                     };
-                    this.setData(value);
+                    this.setData(query.Set);
                 }
                 catch (ex) {
                     console.error(ex);
