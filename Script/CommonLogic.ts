@@ -42,7 +42,8 @@ module KeyStore {
         ReturnedValue: any;
     }
 
-    export var QueryRequests: Array<IWebWorkerRequest> = [],
-        TableName = "LocalStore";
+    export var RequestQueue: Array<IWebWorkerRequest> = [],
+        TableName = "LocalStore",
+        IsCodeExecuting = false;
 
 }

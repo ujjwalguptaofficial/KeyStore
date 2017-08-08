@@ -1,18 +1,19 @@
 module KeyStore {
     export var prcoessExecutionOfCode = function (request: IWebWorkerRequest) {
-        QueryRequests.push(request);
-        if (QueryRequests.length == 1) {
+        RequestQueue.push(request);
+        if (RequestQueue.length == 1) {
             executeCode();
         }
     }
 
     export var executeCode = function () {
-        if (QueryRequests.length > 0) {
+        if (!IsCodeExecuting && RequestQueue.length > 0) {
+            IsCodeExecuting = true;
             var Request = <IWebWorkerRequest>{
-                Name: QueryRequests[0].Name,
-                Query: QueryRequests[0].Query
+                Name: RequestQueue[0].Name,
+                Query: RequestQueue[0].Query
             }
-            executeCodeDirect(QueryRequests[0]);
+            executeCodeDirect(Request);
         }
     }
 
@@ -24,7 +25,8 @@ module KeyStore {
     }
 
     export var processFinishedRequest = function (message: IWebWorkerResult) {
-        var FinishedRequest: IWebWorkerRequest = this.QueryRequests.shift();
+        var FinishedRequest: IWebWorkerRequest = RequestQueue.shift();
+        IsCodeExecuting = false;
         if (message.ErrorOccured) {
             if (FinishedRequest.OnError) {
                 FinishedRequest.OnError(message.ErrorDetails);
@@ -35,7 +37,7 @@ module KeyStore {
         }
         else {
             if (FinishedRequest.OnSuccess) {
-                if (message.ReturnedValue) {
+                if (message.ReturnedValue != null) {
                     FinishedRequest.OnSuccess(message.ReturnedValue);
                 }
                 else {

@@ -7,6 +7,7 @@ module KeyStore {
         Utils.setDbType();
         prcoessExecutionOfCode(<IWebWorkerRequest>{
             Name: 'create_db',
+            Query: TableName
         });
     };
 
@@ -30,7 +31,7 @@ module KeyStore {
             OnSuccess: onSuccess,
             OnError: onError
         });
-
+        return this;
     };
 
     /**
@@ -42,7 +43,6 @@ module KeyStore {
     * @param {Function} [onError=null] 
     */
     export var set = function (key, value, onSuccess: Function = null, onError: Function = null) {
-
         var Query = <IInsert>{
             TableName: this.TableName,
             Set: {
@@ -56,7 +56,7 @@ module KeyStore {
             OnSuccess: onSuccess,
             OnError: onError
         });
-
+        return this;
     };
 
     /**
@@ -79,7 +79,7 @@ module KeyStore {
             OnSuccess: onSuccess,
             OnError: onError
         });
-
+        return this;
     }
 }
 

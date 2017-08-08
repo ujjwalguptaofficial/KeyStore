@@ -1,13 +1,13 @@
 # Overview
 
-keyStore is a storage library for javascript. It saves data in key and value pair in  indexedDb.It acts as an alternative of localStorage.
+keyStore is a storage library for javascript. It saves data in key and value pair in indexedDb.It acts as an alternative of localStorage.
 
 # Feature
 
 1. Preserves data type.
 2. No size limitation.
 3. Can save any type of data including object or blob storage. 
-4. Asynchronous api
+4. Asynchronous api and sync data. It means when you will execute two query together query will be executed one after another.
 
 # Doc
 
@@ -64,3 +64,13 @@ KeyStore.remove('c',function(result){
 
 ```
 
+## Chaining
+
+```
+KeyStore.set('hello','world').
+get('hello',function(result){
+    console.log(result);
+}).
+remove('hello');
+
+```

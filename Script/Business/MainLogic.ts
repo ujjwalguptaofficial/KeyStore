@@ -39,9 +39,6 @@ module KeyStore {
                 if (this.OnSuccess) {
                     this.OnSuccess(result);
                 }
-                else {
-                    (self as any).postMessage(result);
-                }
             }
 
             private executeLogic = function (request: IWebWorkerRequest) {

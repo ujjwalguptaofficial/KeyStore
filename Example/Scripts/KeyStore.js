@@ -16,23 +16,24 @@ var KeyStore;
         ConnectionStatus["Closed"] = "closed";
         ConnectionStatus["NotStarted"] = "not_connected";
     })(ConnectionStatus = KeyStore.ConnectionStatus || (KeyStore.ConnectionStatus = {}));
-    KeyStore.QueryRequests = [], KeyStore.TableName = "LocalStore";
+    KeyStore.RequestQueue = [], KeyStore.TableName = "LocalStore", KeyStore.IsCodeExecuting = false;
 })(KeyStore || (KeyStore = {}));
 var KeyStore;
 (function (KeyStore) {
     KeyStore.prcoessExecutionOfCode = function (request) {
-        KeyStore.QueryRequests.push(request);
-        if (KeyStore.QueryRequests.length == 1) {
+        KeyStore.RequestQueue.push(request);
+        if (KeyStore.RequestQueue.length == 1) {
             KeyStore.executeCode();
         }
     };
     KeyStore.executeCode = function () {
-        if (KeyStore.QueryRequests.length > 0) {
+        if (!KeyStore.IsCodeExecuting && KeyStore.RequestQueue.length > 0) {
+            KeyStore.IsCodeExecuting = true;
             var Request = {
-                Name: KeyStore.QueryRequests[0].Name,
-                Query: KeyStore.QueryRequests[0].Query
+                Name: KeyStore.RequestQueue[0].Name,
+                Query: KeyStore.RequestQueue[0].Query
             };
-            KeyStore.executeCodeDirect(KeyStore.QueryRequests[0]);
+            KeyStore.executeCodeDirect(Request);
         }
     };
     KeyStore.executeCodeDirect = function (request) {
@@ -42,7 +43,8 @@ var KeyStore;
         }).checkConnectionAndExecuteLogic(request);
     };
     KeyStore.processFinishedRequest = function (message) {
-        var FinishedRequest = this.QueryRequests.shift();
+        var FinishedRequest = KeyStore.RequestQueue.shift();
+        KeyStore.IsCodeExecuting = false;
         if (message.ErrorOccured) {
             if (FinishedRequest.OnError) {
                 FinishedRequest.OnError(message.ErrorDetails);
@@ -53,7 +55,7 @@ var KeyStore;
         }
         else {
             if (FinishedRequest.OnSuccess) {
-                if (message.ReturnedValue) {
+                if (message.ReturnedValue != null) {
                     FinishedRequest.OnSuccess(message.ReturnedValue);
                 }
                 else {
@@ -346,9 +348,6 @@ var KeyStore;
                     if (this.OnSuccess) {
                         this.OnSuccess(result);
                     }
-                    else {
-                        self.postMessage(result);
-                    }
                 };
                 this.executeLogic = function (request) {
                     var That = this, OnSuccess = function (results) {
@@ -402,6 +401,7 @@ var KeyStore;
         KeyStore.Utils.setDbType();
         KeyStore.prcoessExecutionOfCode({
             Name: 'create_db',
+            Query: KeyStore.TableName
         });
     };
     KeyStore.get = function (key, onSuccess, onError) {
@@ -418,6 +418,7 @@ var KeyStore;
             OnSuccess: onSuccess,
             OnError: onError
         });
+        return this;
     };
     KeyStore.set = function (key, value, onSuccess, onError) {
         if (onSuccess === void 0) { onSuccess = null; }
@@ -435,6 +436,7 @@ var KeyStore;
             OnSuccess: onSuccess,
             OnError: onError
         });
+        return this;
     };
     KeyStore.remove = function (key, onSuccess, onError) {
         if (onSuccess === void 0) { onSuccess = null; }
@@ -451,6 +453,7 @@ var KeyStore;
             OnSuccess: onSuccess,
             OnError: onError
         });
+        return this;
     };
 })(KeyStore || (KeyStore = {}));
 KeyStore.init();
